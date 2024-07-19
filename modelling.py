@@ -3,6 +3,12 @@ from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 
+
+
+def load_model(filename):
+    return joblib.load(filename)
+
+
 def train_and_evaluate_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     param_grid = {
@@ -30,3 +36,15 @@ def evaluate_model_with_loaded_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     y_pred = clf.predict(X_test)
     print("Classification Report:\n", classification_report(y_test, y_pred))
+
+
+
+def predict_genre(new_data):
+    model = joblib.load('random_forest_model.pkl')
+    predictions = model.predict(new_data)
+    return predictions
+
+def recommend_tracks(df, predicted_genre):
+    recommended_tracks = df[df['genres'] == predicted_genre]
+    return recommended_tracks[['track_name', 'artist_name', 'album_name', 'release_date']]
+
